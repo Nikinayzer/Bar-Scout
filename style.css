@@ -429,7 +429,8 @@ footer{
         flex-direction: column;
         width: 100%;
         justify-content: space-between;
-        height: 210px;
+        min-height:105px;
+        max-height:105px;
     }
     #searchBarDiv{
         width: 100%;
@@ -472,10 +473,4 @@ footer{
     .productCardStats *{
         padding-bottom: 2px;
     }
-  }
-
-  @media only screen and (max-width: 320px) {
-  #nutrRatingAvg{
-
-  }
   }
