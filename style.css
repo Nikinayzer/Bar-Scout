@@ -98,8 +98,6 @@ header div{
 
 .searchDiv{
     padding: 10px;
- 
-
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -172,7 +170,7 @@ header div{
 }
 .productsDiv {
 
-    min-height: 66vh;
+    min-height: 100vh;
     overflow-y: scroll;
     width: 100%;
     min-width: 350px;

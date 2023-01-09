@@ -59,6 +59,7 @@
 
         if (localStorage.getItem("entries") === null) {
             productsDiv.append(noProductsGuide);
+            appContainer.append(footer);
             return
         }
 
