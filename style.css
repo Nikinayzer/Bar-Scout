@@ -179,7 +179,7 @@ header div{
 
     overflow-y: scroll;
     width: 100%;
-    min-width: 350px;
+    min-width: 320px;
     flex: 1 1 auto;
     /* Hide scrollbar for IE, Edge and Firefox */
     -ms-overflow-style: none;
@@ -198,6 +198,7 @@ header div{
 }
 #productsDivTitle{
     text-align: center;
+    width: 100%;
 }
 #noProductsGuide{
     text-align: center;
@@ -205,11 +206,12 @@ header div{
 
 .dateOfEntryDiv{
     width: 50%;
-    min-width: 350px;
+    min-width: 320px;
     margin: 0 auto;
 }
 
 .productCard h2 {
+    width: 100%;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -443,9 +445,7 @@ footer{
     #sortAndDateDiv *{
         height: 40px;
     }
-    .dateOfEntryDiv{
-
-    }
+    
     .productCard {
         min-width: 0;
         width: 300px;
