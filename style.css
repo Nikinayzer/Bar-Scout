@@ -83,6 +83,9 @@ header div{
     border: 2px solid red !important;
     outline: none;
 }
+#noProductsToDisplay{
+    text-align: center;
+}
 
 .searchDiv{
     padding: 10px;
@@ -132,6 +135,12 @@ header div{
 #sortAndDateDiv button{
     width: 55px;
     margin-right: 5px;
+}
+#sortAndDateDiv button:hover{
+    border-color: #2b2b2b;
+}
+#sortAndDateDiv input:hover{
+    border-color: #2b2b2b;
 }
 
 
@@ -203,7 +212,7 @@ header div{
 
 .productCard {
     display: flex;
-    height: 180px;
+    height: 190px;
     max-width: 650px;
     margin: 0 auto;
 
@@ -251,16 +260,20 @@ header div{
 }
 
 .productCardStats {
+    display: flex;
+    flex-direction: column;
     height: 90%;
     color: #e4e4e4;
     margin: 0;
     list-style: none;
     padding: 0;
     padding-left: 15px;
+    justify-content: center;
 }
 
+
 .productCardRating {
-    padding: 30px;
+    padding: 20px;
     text-transform: uppercase;
     display: flex;
     justify-content: center;
