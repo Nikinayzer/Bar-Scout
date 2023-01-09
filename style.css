@@ -258,7 +258,8 @@ header div{
 }
 
 .productCard:hover {
-    margin: 20px 0px 20px 0px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     transform: scale(1.05);
     transition: all 0.5s ease-in;
 }
@@ -427,7 +428,8 @@ footer{
     }
 
     .productCard:hover {
-        margin: 20px 0px 20px 0px;
+        margin-top: 12px;
+        margin-bottom: 12px;
         transform: scale(1.05);
         transition: all 0.5s ease-in;
     }
