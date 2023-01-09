@@ -1,120 +1,76 @@
 (() => {
     const date = new Date();
-    let day = ("0" + (date.getDate() + 2)).slice(-2);
+    let day = ("0" + (date.getDate() + 3)).slice(-2);
     let month = ("0" + (date.getMonth() + 1)).slice(-2);
 
     let year = date.getFullYear();
     let currentDate = `${year}-${month}-${day}`;
 
-    let nutrRatingAvg;
-    $(document).ready(function () {
+    let nutrRatingAvg = "?";
 
 
-        const lettersToDigits = (arr) => {
-            let lettersToDigitsArr = [];
-            arr.forEach((letter) => {
-                switch (letter) {
-                    case "a":
-                        lettersToDigitsArr.push(5);
-                        break;
-                    case "b":
-                        lettersToDigitsArr.push(4);
-                        break;
-                    case "c":
-                        lettersToDigitsArr.push(3);
-                        break;
-                    case "d":
-                        lettersToDigitsArr.push(2);
-                        break;
-                }
-            });
-            return lettersToDigitsArr;
-        };
 
-        const calcAvgOfArr = (arr) => {
-            const sum = arr.reduce((a, b) => a + b, 0);
-            const avg = sum / arr.length || 0;
-            return avg;
-        };
-        const translateScoreToGrade = (score) => {
-            let grade;
-            if (score < 2.3) grade = "D";
-            if (score >= 2.3 && score < 2.5) grade = "D+";
-            if (score >= 2.5 && score < 3) grade = "C-";
-            if (score >= 3 && score < 3.3) grade = "C";
-            if (score >= 3.3 && score < 3.5) grade = "C+";
-            if (score >= 3.5 && score < 4) grade = "B-";
-            if (score >= 4 && score < 4.3) grade = "B";
-            if (score >= 4.3 && score < 4.5) grade = "A-";
-            if (score >= 4.5) grade = "A";
-            return grade;
-        };
+    const appContainer = $("#app");
 
-        console.log("Init " + currentDate);
+    const searchBarDiv = $('<div id="searchBarDiv"></div>');
+    const barInput = $(
+        '<input placeholder="&#x1F50E;&#xFE0E; Search by barcode" type="text"/>'
+    );
+    //const getProductsButton = $("<button>Get product!</button>");
 
-        console.log("test products: 8715700421360,8593807234713,5900020018403");
-        const appContainer = $("#app");
+    const sortAndDateDiv = $('<div id="sortAndDateDiv"></div>');
+    const sortButton = $("<button id='sortButton'>&udarr; Sort</button>");
+    const dateInput = $(`<input type="date" name="date" id="dateInput" max="${currentDate}">`);
 
-        const searchBarDiv = $('<div id="searchBarDiv"></div>');
-        const barInput = $(
-            '<input placeholder="&#x1F50E;&#xFE0E; Search by barcode" type="text"/>'
-        );
-        //const getProductsButton = $("<button>Get product!</button>");
+    const productsDiv = $('<div class="productsDiv"></div>');
+    const productDivTitle = $("<h2 id='productsDivTitle'>My products</h2>");
+    const noProductsGuide = $("<p id='noProductsGuide'>Hmm... You still haven't searched for any product! Let's fix that. Enter any barcode in search above! <br><br> 8715700421360, for example.</p>");
+    const searchDiv = $('<div class="searchDiv"></div>');
 
-        const sortAndDateDiv = $('<div id="sortAndDateDiv"></div>');
-        const sortButton = $("<button id='sortButton'>&udarr; Sort</button>");
-        const dateInput = $(`<input type="date" name="date" id="dateInput" max="${currentDate}">`);
 
-        const productsDiv = $('<div class="productsDiv"></div>');
-        const productDivTitle = $("<h2>My products</h2>");
-        const searchDiv = $('<div class="searchDiv"></div>');
 
-        //load loader
+    const footer = $('<footer></footer>');
+    const footerText = $('<p>Bar Scout | Made with love by <a href="https://github.com/Nikinayzer">Nikita Korotov</a></p>');
 
-        const loadSpinner = () => {
-            const loadSpinnerContainer = $('<div class="loadSpinnerContainer"></div>');
-            const loadSpinnerBackground = $('<div class="loadSpinnerBackground"></div>');
-            const loadSpinner = $('<div class="loadSpinner"></div>');
-            loadSpinnerContainer.append(loadSpinnerBackground);
-            loadSpinnerContainer.append(loadSpinner);
-            appContainer.append(loadSpinnerContainer);
-            //$('body').append(loadSpinnerContainer);
-        };
+    const header = $("header");
 
-        const removeSpinner = () => {
-            $(".loadSpinnerContainer").remove();
-        }
 
-        const header = $("header");
+    searchBarDiv.append(barInput);
+    //searchBarDiv.append(getProductsButton);
+    searchDiv.append(searchBarDiv);
 
-        searchBarDiv.append(barInput);
-        //searchBarDiv.append(getProductsButton);
-        searchDiv.append(searchBarDiv);
+    sortAndDateDiv.append(sortButton);
+    sortAndDateDiv.append(dateInput);
+    searchDiv.append(sortAndDateDiv);
 
-        sortAndDateDiv.append(sortButton);
-        sortAndDateDiv.append(dateInput);
-        searchDiv.append(sortAndDateDiv);
+    appContainer.append(searchDiv);
+    appContainer.append(productsDiv);
+    productsDiv.append(productDivTitle);
 
-        appContainer.append(searchDiv);
-        appContainer.append(productsDiv);
+    footer.append(footerText);
+
+
+
+    function retrieveItemsFromLocalStorage() {
+        let nutrRatingArr = [];
+
+        productsDiv.empty();
         productsDiv.append(productDivTitle);
 
-        //localStorage setup and getting saved info
-        if (!localStorage.getItem("entries")) {
-            let jsonList = {
-                entries: [],
-            };
-            jsonList.entries.push({ date: currentDate, products: [] });
-            localStorage.setItem("entries", JSON.stringify(jsonList));
-            //retrieveItemsFromLocalStorage();
-        } else {
-            retrieveItemsFromLocalStorage();
+        if (localStorage.getItem("entries") === null) {
+            productsDiv.append(noProductsGuide);
+            return
         }
 
-        function retrieveItemsFromLocalStorage() {
-            let nutrRatingArr = [];
-
-            productsDiv.empty();
+        if (JSON.parse(localStorage.getItem("entries")).entries.length == 0) {
+            console.log("Localstorage is empty");
+            const noProductsAfterDelete = $("<p id='noProductsGuide'>Looks like you deleted all of your products... Wanna add some more?</p>");
+            productsDiv.append(noProductsAfterDelete);
+            $(document).ready(function () {
+                $("#nutrRatingAvg").remove();
+            })
+        }
+        else
             JSON.parse(localStorage.getItem("entries")).entries.forEach((entry) => {
                 const dateOfEntryDiv = $(
                     `<div class="dateOfEntryDiv" id="${entry.date}"></div>`
@@ -124,76 +80,137 @@
                 productsDiv.append(dateOfEntryDiv);
                 createProductCards(entry, nutrRatingArr);
             });
-            nutrRatingAvg = translateScoreToGrade(
-                calcAvgOfArr(lettersToDigits(nutrRatingArr))
+        nutrRatingAvg = translateScoreToGrade(
+            calcAvgOfArr(lettersToDigits(nutrRatingArr))
+        );
+        $("#nutrRatingAvg").remove();
+        const nutritionRatingAvgDisplay = $(
+            `<h2 id='nutrRatingAvg'>Your average nutrition rating: ${nutrRatingAvg}</h2>`
+        );
+        header.append(nutritionRatingAvgDisplay);
+        appContainer.append(footer);
+    }
+
+    const lettersToDigits = (arr) => {
+        let lettersToDigitsArr = [];
+        arr.forEach((letter) => {
+            switch (letter) {
+                case "a":
+                    lettersToDigitsArr.push(5);
+                    break;
+                case "b":
+                    lettersToDigitsArr.push(4);
+                    break;
+                case "c":
+                    lettersToDigitsArr.push(3);
+                    break;
+                case "d":
+                    lettersToDigitsArr.push(2);
+                    break;
+            }
+        });
+        return lettersToDigitsArr;
+    };
+
+    const calcAvgOfArr = (arr) => {
+        const sum = arr.reduce((a, b) => a + b, 0);
+        const avg = sum / arr.length || 0;
+        return avg;
+    };
+    const translateScoreToGrade = (score) => {
+        let grade;
+        if (score < 2.3) grade = "D";
+        if (score >= 2.3 && score < 2.5) grade = "D+";
+        if (score >= 2.5 && score < 3) grade = "C-";
+        if (score >= 3 && score < 3.3) grade = "C";
+        if (score >= 3.3 && score < 3.5) grade = "C+";
+        if (score >= 3.5 && score < 4) grade = "B-";
+        if (score >= 4 && score < 4.3) grade = "B";
+        if (score >= 4.3 && score < 4.5) grade = "A-";
+        if (score >= 4.5) grade = "A";
+        return grade;
+    };
+
+    function createProductCards(entry, nutrRatingArr) {
+        entry.products.forEach((product, index) => {
+            nutrRatingArr.push(product.nutriscore_grade);
+            const productCard = $(
+                `<div class="productCard" id="${entry.date}_${index}"></div>`
             );
-            $("#nutrRatingAvg").remove();
-            const nutritionRatingAvgDisplay = $(
-                `<h2 id='nutrRatingAvg'>Your average nutrition rating: ${nutrRatingAvg}</h2>`
+            const productCardPicture = $(
+                `<img class="productCardPicture" src="${product.image_small_url}" alt="${product.product_name}+ photo"></img>`
             );
-            header.append(nutritionRatingAvgDisplay);
-        }
+            const productCardInfo = $(`<div class="productCardInfo"></div`);
+            const productCardTitle = $(
+                `<h3 class="productCardTitle">${product.product_name}</h3>`
+            );
+            const productCardStats = $('<ul class="productCardStats"></ul>');
+            const productCardQuanity = $(`<li>Quantity: ${product.quantity}</li>`);
+            const productCardEnergy = $(
+                `<li>Energy: ${product.nutriments.energy} kJ</li>`
+            );
+            const productCardCarbonhydrates = $(
+                `<li>Carbonhydrates: ${product.nutriments.carbohydrates} ${product.nutriments.carbohydrates_unit}</li>`
+            );
+            const productCardFat = $(
+                `<li>Fats: ${product.nutriments.fat} ${product.nutriments.fat_unit}</li>`
+            );
+            //const productCardFiber = $(`<li>${product.nutriments.fiber}</li>`);
+            const productCardProteins = $(
+                `<li>Protein: ${product.nutriments.proteins} ${product.nutriments.proteins_unit}</li>`
+            );
+            const productCardSugars = $(
+                `<li>Sugars: ${product.nutriments.sugars} ${product.nutriments.sugars_unit}</li>`
+            );
+            const productCardRating = $(
+                `<h2 class="productCardRating">${product.nutriscore_grade}</h2>`
+            );
 
-        function createProductCards(entry, nutrRatingArr) {
-            entry.products.forEach((product, index) => {
-                nutrRatingArr.push(product.nutriscore_grade);
-                const productCard = $(
-                    `<div class="productCard" id="${entry.date}_${index}"></div>`
-                );
-                const productCardPicture = $(
-                    `<img class="productCardPicture" src="${product.image_small_url}" alt="${product.product_name}+ photo"></img>`
-                );
-                const productCardInfo = $(`<div class="productCardInfo"></div`);
-                const productCardTitle = $(
-                    `<h3 class="productCardTitle">${product.product_name}</h3>`
-                );
-                const productCardStats = $('<ul class="productCardStats"></ul>');
-                const productCardQuanity = $(`<li>Quantity: ${product.quantity}</li>`);
-                const productCardEnergy = $(
-                    `<li>Energy: ${product.nutriments.energy} kJ</li>`
-                );
-                const productCardCarbonhydrates = $(
-                    `<li>Carbonhydrates: ${product.nutriments.carbohydrates} ${product.nutriments.carbohydrates_unit}</li>`
-                );
-                const productCardFat = $(
-                    `<li>Fats: ${product.nutriments.fat} ${product.nutriments.fat_unit}</li>`
-                );
-                //const productCardFiber = $(`<li>${product.nutriments.fiber}</li>`);
-                const productCardProteins = $(
-                    `<li>Protein: ${product.nutriments.proteins} ${product.nutriments.proteins_unit}</li>`
-                );
-                const productCardSugars = $(
-                    `<li>Sugars: ${product.nutriments.sugars} ${product.nutriments.sugars_unit}</li>`
-                );
-                const productCardRating = $(
-                    `<h2 class="productCardRating">${product.nutriscore_grade}</h2>`
-                );
+            //delete button
+            const productCardDeleteButton = $(
+                `<button class="deleteButton" id="${entry.date}_${index}_button">X</button>`
+            );
 
-                //delete button
-                const productCardDeleteButton = $(
-                    `<button class="deleteButton" id="${entry.date}_${index}_button">X</button>`
-                );
+            productCard.append(productCardPicture);
+            productCard.append(productCardInfo);
+            productCardInfo.append(productCardTitle);
+            productCardInfo.append(productCardStats);
+            productCardStats.append(productCardQuanity);
+            productCardStats.append(productCardEnergy);
+            productCardStats.append(productCardCarbonhydrates);
+            productCardStats.append(productCardFat);
+            //productCardStats.append(productCardFiber);
+            productCardStats.append(productCardProteins);
+            productCardStats.append(productCardSugars);
+            productCard.append(productCardRating);
 
-                productCard.append(productCardPicture);
-                productCard.append(productCardInfo);
-                productCardInfo.append(productCardTitle);
-                productCardInfo.append(productCardStats);
-                productCardStats.append(productCardQuanity);
-                productCardStats.append(productCardEnergy);
-                productCardStats.append(productCardCarbonhydrates);
-                productCardStats.append(productCardFat);
-                //productCardStats.append(productCardFiber);
-                productCardStats.append(productCardProteins);
-                productCardStats.append(productCardSugars);
-                productCard.append(productCardRating);
+            productCard.append(productCardDeleteButton);
 
-                productCard.append(productCardDeleteButton);
+            const dateOfEntryDiv = $(`#${entry.date}`);
+            //productsDiv.append(productCard);
+            dateOfEntryDiv.append(productCard);
+        });
+    }
+    const loadSpinner = () => {
+        const loadSpinnerContainer = $('<div class="loadSpinnerContainer"></div>');
+        const loadSpinnerBackground = $('<div class="loadSpinnerBackground"></div>');
+        const loadSpinner = $('<div class="loadSpinner"></div>');
+        loadSpinnerContainer.append(loadSpinnerBackground);
+        loadSpinnerContainer.append(loadSpinner);
+        appContainer.append(loadSpinnerContainer);
+        //$('body').append(loadSpinnerContainer);
+    };
 
-                const dateOfEntryDiv = $(`#${entry.date}`);
-                //productsDiv.append(productCard);
-                dateOfEntryDiv.append(productCard);
-            });
-        }
+    const removeSpinner = () => {
+        $(".loadSpinnerContainer").remove();
+    }
+
+    $(document).ready(function () {
+        console.log("Init " + currentDate);
+        console.log("test products: 8715700421360,8593807234713,5900020018403");
+        retrieveItemsFromLocalStorage()
+
+
 
         /*
                                             // $(document) is because of event delegation ('.productCard' is being overwritten).
@@ -239,7 +256,7 @@
         $(document).on("click", "#sortButton", function (event) {
             event.preventDefault();
 
-            let toSort = $(".productsDiv").children();
+            let toSort = $(".productsDiv").children().not(productDivTitle);
             toSort = Array.prototype.slice.call(toSort, 0);
 
             toSort.sort(function (a, b) {
@@ -256,6 +273,7 @@
 
         /* Display products by date */
         $("#dateInput").change(function () {
+            if (localStorage.getItem("entries") === null ||JSON.parse(localStorage.getItem("entries")).entries.length == 0) return;
             $("#noProductsToDisplay").remove();
 
             let date = $("#dateInput").val();
@@ -285,7 +303,8 @@
             return index;
         }
 
-        //ON CLICK
+
+        /* Finding a product on enter*/
 
         barInput.on("keypress", function (e) {
             if (e.which == 13) {
@@ -295,8 +314,18 @@
                     barInput.addClass("error");
                     barInput.attr("placeholder", "Provide a valid barcode!");
                     barInput.val('');
-                } else {
+
+                }
+                else {
                     loadSpinner();
+                    //setup localstorage on first fetch request
+                    if (localStorage.getItem("entries") === null) {
+                        let jsonList = {
+                            entries: [],
+                        };
+                        //jsonList.entries.push({ date: currentDate, products: [] });
+                        localStorage.setItem("entries", JSON.stringify(jsonList));
+                    }
                     const url = `https://world.openfoodfacts.org/api/v2/search?code=${barInput.val()}&fields=code,product_name,generic_name,quantity,image_small_url,nutriments,nutriments_data,nutriscore_grade`;
                     barInput.removeClass("error");
                     barInput.val('');
