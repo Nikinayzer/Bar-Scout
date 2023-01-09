@@ -106,22 +106,20 @@ header div{
     padding: 10px;
     display: flex;
     flex-direction: row;
-    width: 100%;
+   
     justify-content: space-between;
-    min-width: 300px;
+max-width: 650px;
     height: 65px;
-    max-width: 400px;
-
-
+    align-items: center;
+    justify-content: center;
 }
 #searchBarDiv{
+    width: 60%;
     display: flex;
-    width: 100%;
-    justify-content: space-between;
 }
 #searchBarDiv input{
     margin: 0 auto;
-    width: 90%;
+    width: 95%;
     min-width: 250px;
     max-width: 400px;
     height: 40px;
@@ -143,14 +141,22 @@ header div{
     background-color: #fffffff5;
 }
 #sortAndDateDiv{
+    width:45%;
     display: flex;
-    justify-content: end;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
 
 }
+#sortAndDateDiv label{
+    align-items: center;
+    display: flex;
+    font-size: small;
+}
+
 
 #sortAndDateDiv button{
-    width: 55px;
-    margin-right: 5px;
+    width: 60px;
 }
 #sortAndDateDiv button:hover{
     border-color: #2b2b2b;
@@ -162,21 +168,11 @@ header div{
 }
 
 
-/* To display only icon of date input */
-#sortAndDateDiv input[type="date"]::-webkit-inner-spin-button,
-#sortAndDateDiv input[type="date"]::-webkit-calendar-picker-indicator {
-    margin:0;
-
-}
-#sortAndDateDiv input[type="date"]::-webkit-datetime-edit {
-    display:none;
-}
-
 #sortAndDateDiv *{
     height: 40px;
+    padding: 3px;
 }
 .productsDiv {
-
     overflow-y: scroll;
     width: 100%;
     min-width: 320px;
@@ -430,20 +426,30 @@ footer{
     }
 
     .searchDiv{
-        flex-direction: row;
-        width: 80%;
+        flex-direction: column;
+        width: 100%;
         justify-content: space-between;
-        height: 80px;
+        height: 210px;
     }
     #searchBarDiv{
-        width: 70%;
+        width: 100%;
     }
     #searchBarDiv input{
         min-width: 0;
         width: 100%;
+        max-width: none;
+       
+    }
+    #sortAndDateDiv{
+        width: 100%;
+        justify-content: end;
     }
     #sortAndDateDiv *{
         height: 40px;
+        padding: 6px;
+    }
+    #sortAndDateDiv button{
+        width: 40px;
     }
     
     .productCard {
