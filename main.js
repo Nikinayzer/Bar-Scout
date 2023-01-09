@@ -211,6 +211,7 @@
         console.log("Init " + currentDate);
         console.log("test products: 8715700421360,8593807234713,5900020018403");
         retrieveItemsFromLocalStorage()
+        
 
 
 

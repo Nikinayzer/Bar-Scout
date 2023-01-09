@@ -46,13 +46,19 @@ header{
     z-index: 1;
     
 }
+header div{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
 header #logo{
-    width: 70%;
-    height: 100%;
-    background-image: url("./logo.png");
-    background-repeat:no-repeat;
-    background-size:100%;
-    background-position: center;
+    padding: 10px;
+}
+header #logo div{
+color: #ffffff;
+display: flex;
+flex-direction: row;
+
 }
 
 header a:not(#logo){
@@ -73,20 +79,13 @@ header a:hover:not(#logo){
 
 header h2{
     margin: 0;
-    margin-right: 100px;
+    margin-right: 25px;
     padding: 10px;
 }
 header a{
     font-size: 1.5em;
 }
-header div{
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    width: 30%;
-    align-items: center;
-    
-}
+
 .error{
     border: 2px solid red !important;
     outline: none;
@@ -244,7 +243,7 @@ max-width: 650px;
     min-width: 110px;
     width: 60%;
     filter: saturate(0.8);
-    max-width: 200px;
+    max-width: 140px;
 }
 
 .productCard:hover {
@@ -331,6 +330,7 @@ footer{
     width: 100vw;
     background-color: rgba(0, 0, 0, 0.595);
     backdrop-filter: blur(2px);
+    z-index: 2;
 }
 .loadSpinnerBackground{
     position: absolute;
@@ -340,7 +340,7 @@ footer{
     height: 200px;
     width: 200px;
     border-radius: 10px;
-    background-color: rgba(25, 161, 43, 0.878);
+    background-color: rgba(32, 32, 32, 0.836);
 }
 .loadSpinner {
     display: flex;
@@ -361,11 +361,12 @@ footer{
             animation: animate-loader-spin-2 1.5s ease-in-out infinite;
     height: 80%;
   }
-  .loadSpinner::before, .loadSpinner::after {
-    content: "";
+  .loadSpinner::before, .barcode::after {
+    content: '';
     width: 1px;
-    box-shadow: 0 0 0 #333, 1px 0 0 #333, 4px 0 0 #333, 5px 0 0 #333, 6px 0 0 #333, 9px 0 0 #333, 10px 0 0 #333, 11px 0 0 #333, 12px 0 0 #333, 13px 0 0 #333, 14px 0 0 #333, 15px 0 0 #333, 16px 0 0 #333, 19px 0 0 #333, 20px 0 0 #333, 21px 0 0 #333, 22px 0 0 #333, 23px 0 0 #333, 26px 0 0 #333, 27px 0 0 #333, 28px 0 0 #333, 31px 0 0 #333, 32px 0 0 #333, 33px 0 0 #333, 34px 0 0 #333, 37px 0 0 #333, 38px 0 0 #333, 41px 0 0 #333, 42px 0 0 #333, 43px 0 0 #333;
+    box-shadow: 0 0 0 #fff, 1px 0 0 #fff, 4px 0 0 #fff, 5px 0 0 #fff, 6px 0 0 #fff, 9px 0 0 #fff, 10px 0 0 #fff, 11px 0 0 #fff, 12px 0 0 #fff, 13px 0 0 #fff, 14px 0 0 #fff, 15px 0 0 #fff, 16px 0 0 #fff, 19px 0 0 #fff, 20px 0 0 #fff, 21px 0 0 #fff, 22px 0 0 #fff, 23px 0 0 #fff, 26px 0 0 #fff, 27px 0 0 #fff, 28px 0 0 #fff, 31px 0 0 #fff, 32px 0 0 #fff, 33px 0 0 #fff, 34px 0 0 #fff, 37px 0 0 #fff, 38px 0 0 #fff, 41px 0 0 #fff, 42px 0 0 #fff, 43px 0 0 #fff;
   }
+  
   
   @-webkit-keyframes animate-loader-spin-1 {
     50% {
@@ -398,14 +399,16 @@ footer{
         height: 220px;
     }
     header div{
-        width: 100%;
         flex-direction: column;
         height: 120px;
     }
     header #logo{
-        margin-top: 10px;
+        margin-top: 30px;
+        height: 10px;
+    }
+    header #logo div{
+        height: 100%;
         width: 100%;
-        height: 50px;
     }
     header h2{
         width: 80%;
