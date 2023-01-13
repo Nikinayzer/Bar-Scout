@@ -6,7 +6,7 @@
     let year = date.getFullYear();
     let currentDate = `${year}-${month}-${day}`;
 
-    let nutrRatingAvg = "?";
+    let nutrRatingAvg = "";
 
 
 
