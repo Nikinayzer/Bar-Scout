@@ -109,6 +109,8 @@
                 case "d":
                     lettersToDigitsArr.push(2);
                     break;
+                case "e":
+                    lettersToDigitsArr.push(1);
             }
         });
         return lettersToDigitsArr;
@@ -121,7 +123,8 @@
     };
     const translateScoreToGrade = (score) => {
         let grade;
-        if (score < 2.3) grade = "D";
+        if (score <2) grade = "E";
+        if (score >= 2 && score < 2.3) grade = "D";
         if (score >= 2.3 && score < 2.5) grade = "D+";
         if (score >= 2.5 && score < 3) grade = "C-";
         if (score >= 3 && score < 3.3) grade = "C";
@@ -205,6 +208,13 @@
 
     const removeSpinner = () => {
         $(".loadSpinnerContainer").remove();
+    }
+
+    function findIndexOfDate(list) {
+        const index = list.entries.findIndex(
+            (element) => element.date === currentDate
+        );
+        return index;
     }
 
     $(document).ready(function () {
@@ -299,12 +309,7 @@
             }
         });
 
-        function findIndexOfDate(list) {
-            const index = list.entries.findIndex(
-                (element) => element.date === currentDate
-            );
-            return index;
-        }
+        
 
 
         /* Finding a product on enter*/
