@@ -16,7 +16,8 @@
     const barInput = $(
         '<input placeholder="&#x1F50E;&#xFE0E; Search by barcode" type="text"/>'
     );
-    //const getProductsButton = $("<button>Get product!</button>");
+
+    //const getProductsButton = $("<button>or scan from photo</button>");
 
     const sortAndDateDiv = $('<div id="sortAndDateDiv"></div>');
     const sortButton = $(`<label for="sortButton">Sort:</label><button id='sortButton'>&udarr;</button>`);
@@ -49,7 +50,6 @@
     productsDiv.append(productDivTitle);
 
     footer.append(footerText);
-
 
 
     function retrieveItemsFromLocalStorage() {
@@ -309,8 +309,6 @@
             }
         });
 
-        
-
 
         /* Finding a product on enter*/
 
@@ -378,5 +376,6 @@
                 }
             }
         });
+        
     });
 })();
