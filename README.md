@@ -1,8 +1,11 @@
-a more secure and faster solution (No registration needed).
+# Bar Scout
+
+The Bar Scout is a web application that enables people to scan barcodes and save all the info about a product locally. The scanner saves all product information in the browser's localStorage, providing a more secure and faster solution (No registration needed).
 
 ## Features
 
 - Get info about any product by it's barcode (QR codes will be added later).
+- Full Open Food Facts database.
 - Save product information in the browser's localStorage for offline use
 - Easy to use
 
