@@ -1,6 +1,6 @@
 # Bar Scout
 
-The Bar Scout is a <strong><i>minimalistic</i></strong> web application that enables people to scan barcodes and save all the info about a product locally. The scanner saves all product information in the browser's localStorage, providing a more secure and faster solution (No registration needed).
+Bar Scout is a <strong><i>minimalistic</i></strong> web application that enables people to scan barcodes and save all the info about a product locally. The scanner saves all product information in the browser's localStorage, providing a more secure and faster solution (No registration needed).
 <p align="center">
   <img src="https://github.com/nikinayzer/Bar-Scout/blob/main/repo/bar_scout_demo.gif" width="850" title="use example">
 </p>
@@ -39,7 +39,7 @@ There is also a [TODO list](https://github.com/users/Nikinayzer/projects/2) wher
 
 ## License
 
-The Bar Scout is released under the MIT License. See the `LICENSE` file for more information.
+Bar Scout is released under the MIT License. See the `LICENSE` file for more information.
 ## Credits
 
 Bar Scout was created by Nick Korotov.
