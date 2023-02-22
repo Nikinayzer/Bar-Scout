@@ -22,7 +22,7 @@
     const sortAndDateDiv = $('<div id="sortAndDateDiv"></div>');
     const sortButton = $(`<label for="sortButton">Sort:</label><button id='sortButton'>&udarr;</button>`);
     const dateInput = $(`
-    <label for="date">filter by date:</label><input type="date" name="date" id="dateInput" max="${currentDate}" placeholder="Enter date">`);
+    <label for="date">filter by date:</label><input type="date" name="date" id="dateInput"  max="${currentDate}">`);
 
     const productsDiv = $('<div class="productsDiv"></div>');
     const productDivTitle = $("<h2 id='productsDivTitle'>My products</h2>");
