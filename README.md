@@ -34,7 +34,7 @@ Some metrics gathered from Lighthouse test:
 
 ## Contributing
 
-If you'd like to contribute to the Bar Scout project, feel free to fork the repository and submit a pull request with your changes. We welcome all contributions, big or small!
+If you'd like to contribute to the Bar Scout project, feel free to fork the repository and submit a pull request with your changes. I welcome all contributions, big or small!
 
 ## License
 
