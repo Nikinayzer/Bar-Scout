@@ -1,6 +1,6 @@
 # Bar Scout
 
-The Bar Scout is a <strong>minimalistic</strong> web application that enables people to scan barcodes and save all the info about a product locally. The scanner saves all product information in the browser's localStorage, providing a more secure and faster solution (No registration needed).
+The Bar Scout is a <strong><i>minimalistic</i></strong> web application that enables people to scan barcodes and save all the info about a product locally. The scanner saves all product information in the browser's localStorage, providing a more secure and faster solution (No registration needed).
 
 ## Features
 
