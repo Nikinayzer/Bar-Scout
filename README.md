@@ -23,6 +23,15 @@ To add a product, simply write the barcode to search field. The scanner will aut
 
 To delete an existing product, hover on a product card and press red delete button, that appears to the right on the card.
 
+## Performance
+Some metrics gathered from Lighthouse test:
+<p align="center">
+  <img src="https://github.com/nikinayzer/Bar-Scout/blob/main/repo/lighthouse_metrics.png" width="550" title="lighthouse overall metrics">
+</p>
+<p align="center">
+  <img src="https://github.com/nikinayzer/Bar-Scout/blob/main/repo/lighthouse_metrics2.png" width="550" title="lighthouse renderings time">
+</p>
+
 ## Contributing
 
 If you'd like to contribute to the Bar Scout project, feel free to fork the repository and submit a pull request with your changes. We welcome all contributions, big or small!
