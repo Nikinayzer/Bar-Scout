@@ -42,4 +42,4 @@ There is also a [TODO list](https://github.com/users/Nikinayzer/projects/2) wher
 The Bar Scout is released under the MIT License. See the `LICENSE` file for more information.
 ## Credits
 
-The Local Bar Scanner was created by Nick Korotov.
+Bar Scout was created by Nick Korotov.
