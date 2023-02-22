@@ -21,7 +21,7 @@ To get started with the Bar Scout, simply download or clone the repository to yo
 
 To add a product, simply write the barcode to search field. The scanner will automatically detect and retrieve the product information from the Open Food Facts database, and display it on the screen.
 
-To delete an existing product, hover on a product card and press red delete button, that appeared on the right of the card.
+To delete an existing product, hover on a product card and press red delete button, that appears to the right on the card.
 
 ## Contributing
 
