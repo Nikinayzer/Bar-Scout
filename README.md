@@ -5,10 +5,11 @@ The Bar Scout is a <strong><i>minimalistic</i></strong> web application that ena
 ## Features
 
 - Get info about any product by it's barcode (QR codes scan will be added later).
+- Keep a diary of your products sorted by date.
 - Calculate your average nutrition rating based on the scanned products.
 - Full Open Food Facts database.
-- Save product information in the browser's localStorage for offline use
-- Easy to use
+- Save product information in the browser's localStorage for offline use.
+- Easy to use.
 
 ## Getting Started
 
