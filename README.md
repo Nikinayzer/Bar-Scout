@@ -11,6 +11,7 @@ The Bar Scout is a <strong><i>minimalistic</i></strong> web application that ena
 - Full Open Food Facts database.
 - Save product information in the browser's localStorage for offline use
 - Easy to use
+- Multiple barcodes scan (use comma to separate codes). Example: <code>8715700421360,8593807234713</code>
 
 ## Getting Started
 
