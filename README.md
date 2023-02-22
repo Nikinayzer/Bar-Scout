@@ -1,15 +1,17 @@
 # Bar Scout
 
 The Bar Scout is a <strong><i>minimalistic</i></strong> web application that enables people to scan barcodes and save all the info about a product locally. The scanner saves all product information in the browser's localStorage, providing a more secure and faster solution (No registration needed).
+<p align="center">
+  <img src="https://github.com/nikinayzer/Bar-Scout/blob/main/repo/bar_scout_demo.gif" width="850" title="use example">
+</p>
 
 ## Features
 
 - Get info about any product by it's barcode (QR codes scan will be added later).
-- Keep a diary of your products sorted by date.
-- Calculate your average nutrition rating based on the scanned products.
 - Full Open Food Facts database.
-- Save product information in the browser's localStorage for offline use.
-- Easy to use.
+- Save product information in the browser's localStorage for offline use
+- Easy to use
+- Multiple barcodes scan (use comma to separate codes). Example: <code>8715700421360,8593807234713</code>
 
 ## Getting Started
 
@@ -19,7 +21,7 @@ To get started with the Bar Scout, simply download or clone the repository to yo
 
 To add a product, simply write the barcode to search field. The scanner will automatically detect and retrieve the product information from the Open Food Facts database, and display it on the screen.
 
-To delete an existing product, hover on a product card and press red delete button, that appeared on the right of the card.
+To delete an existing product, hover on a product card and press red delete button, that appears to the right on the card.
 
 ## Contributing
 
