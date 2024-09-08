@@ -1,381 +1,201 @@
 (() => {
+    console.log("test products: 8715700421360,8593807234713,5900020018403"); 
     const date = new Date();
-    let day = ("0" + (date.getDate())).slice(-2);
-    let month = ("0" + (date.getMonth() + 1)).slice(-2);
-
-    let year = date.getFullYear();
-    let currentDate = `${year}-${month}-${day}`;
-
-    let nutrRatingAvg = "";
-
-
-
+    const currentDate = date.toISOString().split('T')[0]; // ISO format: YYYY-MM-DD
     const appContainer = $("#app");
+    const header = $("header");
 
     const searchBarDiv = $('<div id="searchBarDiv"></div>');
-    const barInput = $(
-        '<input placeholder="&#x1F50E;&#xFE0E; Search by barcode" type="text"/>'
-    );
-
-    //const getProductsButton = $("<button>or scan from photo</button>");
-
+    const barInput = $('<input placeholder="&#x1F50E;&#xFE0E; Search by barcode" type="text"/>');
     const sortAndDateDiv = $('<div id="sortAndDateDiv"></div>');
-    const sortButton = $(`<label for="sortButton">Sort:</label><button id='sortButton'>&udarr;</button>`);
-    const dateInput = $(`
-    <label for="date">filter by date:</label><input type="date" name="date" id="dateInput"  max="${currentDate}">`);
+    const sortButton = $('<label for="sortButton">Sort:</label><button id="sortButton">&udarr;</button>');
+    const dateInput = $(`<label for="date">filter by date:</label><input type="date" name="date" id="dateInput" max="${currentDate}">`);
 
     const productsDiv = $('<div class="productsDiv"></div>');
     const productDivTitle = $("<h2 id='productsDivTitle'>My products</h2>");
     const noProductsGuide = $("<p id='noProductsGuide'>Hmm... You still haven't searched for any product! Let's fix that. Enter any barcode in search above! <br><br> 8715700421360, for example.</p>");
     const searchDiv = $('<div class="searchDiv"></div>');
 
-
-
-    const footer = $('<footer></footer>');
-    const footerText = $('<p>Bar Scout | Made with love by <a href="https://github.com/Nikinayzer">Nikita Korotov</a></p>');
-
-    const header = $("header");
-
+    const footer = $('<footer><p>Bar Scout | Made with love by <a href="https://github.com/Nikinayzer">Nikita Korotov</a></p></footer>');
 
     searchBarDiv.append(barInput);
-    //searchBarDiv.append(getProductsButton);
-    searchDiv.append(searchBarDiv);
+    sortAndDateDiv.append(sortButton).append(dateInput);
+    searchDiv.append(searchBarDiv).append(sortAndDateDiv);
 
-    sortAndDateDiv.append(sortButton);
-    sortAndDateDiv.append(dateInput);
-    searchDiv.append(sortAndDateDiv);
-
-    appContainer.append(searchDiv);
-    appContainer.append(productsDiv);
+    appContainer.append(searchDiv).append(productsDiv);
     productsDiv.append(productDivTitle);
-
-    footer.append(footerText);
-
+    appContainer.append(footer);
 
     function retrieveItemsFromLocalStorage() {
         let nutrRatingArr = [];
+        productsDiv.empty().append(productDivTitle);
 
-        productsDiv.empty();
-        productsDiv.append(productDivTitle);
+        const entries = JSON.parse(localStorage.getItem("entries"));
 
-        if (localStorage.getItem("entries") === null) {
-            productsDiv.append(noProductsGuide);
-            appContainer.append(footer);
-            return
+        if (!entries || entries.entries.length === 0) {
+            const noProductsGuideText = entries ? 
+                "<p id='noProductsGuide'>Looks like you deleted all of your products... Wanna add some more?</p>" :
+                noProductsGuide;
+            productsDiv.append(noProductsGuideText);
+            $("#nutrRatingAvg").remove();
+            return;
         }
 
-        if (JSON.parse(localStorage.getItem("entries")).entries.length == 0) {
-            console.log("Localstorage is empty");
-            const noProductsAfterDelete = $("<p id='noProductsGuide'>Looks like you deleted all of your products... Wanna add some more?</p>");
-            productsDiv.append(noProductsAfterDelete);
-            $(document).ready(function () {
-                $("#nutrRatingAvg").remove();
-            })
-        }
-        else
-            JSON.parse(localStorage.getItem("entries")).entries.forEach((entry) => {
-                const dateOfEntryDiv = $(
-                    `<div class="dateOfEntryDiv" id="${entry.date}"></div>`
-                );
-                const dateOfEntry = $(`<h2 class="dateOfEntry">${entry.date}</h2>`);
-                dateOfEntryDiv.append(dateOfEntry);
-                productsDiv.append(dateOfEntryDiv);
-                createProductCards(entry, nutrRatingArr);
-            });
-        nutrRatingAvg = translateScoreToGrade(
-            calcAvgOfArr(lettersToDigits(nutrRatingArr))
-        );
+        entries.entries.forEach(entry => {
+            const dateOfEntryDiv = $(`<div class="dateOfEntryDiv" id="${entry.date}"><h2 class="dateOfEntry">${entry.date}</h2></div>`);
+            productsDiv.append(dateOfEntryDiv);
+            createProductCards(entry, nutrRatingArr);
+        });
+
+        const avgRating = translateScoreToGrade(calcAvgOfArr(lettersToDigits(nutrRatingArr)));
         $("#nutrRatingAvg").remove();
-        const nutritionRatingAvgDisplay = $(
-            `<h2 id='nutrRatingAvg'>Your average nutrition rating: ${nutrRatingAvg}</h2>`
-        );
+        const nutritionRatingAvgDisplay = $(`<h2 id='nutrRatingAvg'>Your average nutrition rating: ${avgRating}</h2>`);
         header.append(nutritionRatingAvgDisplay);
-        appContainer.append(footer);
     }
 
-    const lettersToDigits = (arr) => {
-        let lettersToDigitsArr = [];
-        arr.forEach((letter) => {
-            switch (letter) {
-                case "a":
-                    lettersToDigitsArr.push(5);
-                    break;
-                case "b":
-                    lettersToDigitsArr.push(4);
-                    break;
-                case "c":
-                    lettersToDigitsArr.push(3);
-                    break;
-                case "d":
-                    lettersToDigitsArr.push(2);
-                    break;
-                case "e":
-                    lettersToDigitsArr.push(1);
-            }
-        });
-        return lettersToDigitsArr;
-    };
+    function lettersToDigits(arr) {
+        const gradeMap = { 'a': 5, 'b': 4, 'c': 3, 'd': 2, 'e': 1 };
+        return arr.map(letter => gradeMap[letter] || 0);
+    }
 
-    const calcAvgOfArr = (arr) => {
-        const sum = arr.reduce((a, b) => a + b, 0);
-        const avg = sum / arr.length || 0;
-        return avg;
-    };
-    const translateScoreToGrade = (score) => {
-        let grade;
-        if (score <2) grade = "E";
-        if (score >= 2 && score < 2.3) grade = "D";
-        if (score >= 2.3 && score < 2.5) grade = "D+";
-        if (score >= 2.5 && score < 3) grade = "C-";
-        if (score >= 3 && score < 3.3) grade = "C";
-        if (score >= 3.3 && score < 3.5) grade = "C+";
-        if (score >= 3.5 && score < 4) grade = "B-";
-        if (score >= 4 && score < 4.3) grade = "B";
-        if (score >= 4.3 && score < 4.5) grade = "A-";
-        if (score >= 4.5) grade = "A";
-        return grade;
-    };
+    function calcAvgOfArr(arr) {
+        return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+    }
+
+    function translateScoreToGrade(score) {
+        if (score < 2) return "E";
+        if (score < 2.3) return "D";
+        if (score < 2.5) return "D+";
+        if (score < 3) return "C-";
+        if (score < 3.3) return "C";
+        if (score < 3.5) return "C+";
+        if (score < 4) return "B-";
+        if (score < 4.3) return "B";
+        if (score < 4.5) return "A-";
+        return "A";
+    }
 
     function createProductCards(entry, nutrRatingArr) {
         entry.products.forEach((product, index) => {
             nutrRatingArr.push(product.nutriscore_grade);
-            const productCard = $(
-                `<div class="productCard" id="${entry.date}_${index}"></div>`
-            );
-            const productCardPicture = $(
-                `<img class="productCardPicture" src="${product.image_small_url || "./noPhotoImg.png"}" alt="${product.product_name}+ photo"></img>`
-            );
-            const productCardInfo = $(`<div class="productCardInfo"></div`);
-            const productCardTitle = $(
-                `<h3 class="productCardTitle">${product.product_name || "no info"}</h3>`
-            );
-            const productCardStats = $('<ul class="productCardStats"></ul>');
-            const productCardQuanity = $(`<li>Quantity: ${product.quantity || "no info"}</li>`);
-            const productCardEnergy = $(
-                `<li>Energy: ${product.nutriments.energy || "no info"} ${product.nutriments.energy_unit || ""}</li>`
-            );
-            const productCardCarbonhydrates = $(
-                `<li>Carbonhydrates: ${product.nutriments.carbohydrates || "no info"} ${product.nutriments.carbohydrates_unit || ""}</li>`
-            );
-            const productCardFat = $(
-                `<li>Fats: ${product.nutriments.fat || "no info"} ${product.nutriments.fat_unit || ""}</li>`
-            );
-            //const productCardFiber = $(`<li>${product.nutriments.fiber}</li>`);
-            const productCardProteins = $(
-                `<li>Protein: ${product.nutriments.proteins || "no info"} ${product.nutriments.proteins_unit || ""}</li>`
-            );
-            const productCardSugars = $(
-                `<li>Sugars: ${product.nutriments.sugars || "no info"} ${product.nutriments.sugars_unit || ""}</li>`
-            );
-            const productCardRating = $(
-                `<h2 class="productCardRating">${product.nutriscore_grade || "?"}</h2>`
-            );
-
-            //delete button
-            const productCardDeleteButton = $(
-                `<button class="deleteButton" id="${entry.date}_${index}_button">X</button>`
-            );
-
-            productCard.append(productCardPicture);
-            productCard.append(productCardInfo);
-            productCardInfo.append(productCardTitle);
-            productCardInfo.append(productCardStats);
-            productCardStats.append(productCardQuanity);
-            productCardStats.append(productCardEnergy);
-            productCardStats.append(productCardCarbonhydrates);
-            productCardStats.append(productCardFat);
-            //productCardStats.append(productCardFiber);
-            productCardStats.append(productCardProteins);
-            productCardStats.append(productCardSugars);
-            productCard.append(productCardRating);
-
-            productCard.append(productCardDeleteButton);
-
-            const dateOfEntryDiv = $(`#${entry.date}`);
-            //productsDiv.append(productCard);
-            dateOfEntryDiv.append(productCard);
+            const productCard = $(`
+                <div class="productCard" id="${entry.date}_${index}">
+                    <img class="productCardPicture" src="${product.image_small_url || "./noPhotoImg.png"}" alt="${product.product_name} photo">
+                    <div class="productCardInfo">
+                        <h3 class="productCardTitle">${product.product_name || "no info"}</h3>
+                        <ul class="productCardStats">
+                            <li>Quantity: ${product.quantity || "no info"}</li>
+                            <li>Energy: ${product.nutriments.energy || "no info"} ${product.nutriments.energy_unit || ""}</li>
+                            <li>Carbohydrates: ${product.nutriments.carbohydrates || "no info"} ${product.nutriments.carbohydrates_unit || ""}</li>
+                            <li>Fats: ${product.nutriments.fat || "no info"} ${product.nutriments.fat_unit || ""}</li>
+                            <li>Protein: ${product.nutriments.proteins || "no info"} ${product.nutriments.proteins_unit || ""}</li>
+                            <li>Sugars: ${product.nutriments.sugars || "no info"} ${product.nutriments.sugars_unit || ""}</li>
+                        </ul>
+                    </div>
+                    <h2 class="productCardRating">${product.nutriscore_grade || "?"}</h2>
+                    <button class="deleteButton" id="${entry.date}_${index}_button">X</button>
+                </div>
+            `);
+            $(`#${entry.date}`).append(productCard);
         });
     }
-    const loadSpinner = () => {
-        const loadSpinnerContainer = $('<div class="loadSpinnerContainer"></div>');
-        const loadSpinnerBackground = $('<div class="loadSpinnerBackground"></div>');
-        const loadSpinner = $('<div class="loadSpinner"></div>');
-        loadSpinnerContainer.append(loadSpinnerBackground);
-        loadSpinnerContainer.append(loadSpinner);
-        appContainer.append(loadSpinnerContainer);
-        //$('body').append(loadSpinnerContainer);
-    };
 
-    const removeSpinner = () => {
+    function loadSpinner() {
+        const loadSpinner = $(`<div class="loadSpinnerContainer">
+            <div class="loadSpinnerBackground"></div>
+            <div class="loadSpinner"></div>
+        </div>`);
+        appContainer.append(loadSpinner);
+    }
+
+    function removeSpinner() {
         $(".loadSpinnerContainer").remove();
     }
 
-    function findIndexOfDate(list) {
-        const index = list.entries.findIndex(
-            (element) => element.date === currentDate
-        );
-        return index;
+    function findIndexOfDate(list, date) {
+        return list.entries.findIndex(element => element.date === date);
     }
 
     $(document).ready(function () {
-        console.log("Init " + currentDate);
-        console.log("test products: 8715700421360,8593807234713,5900020018403");
-        retrieveItemsFromLocalStorage()
+        retrieveItemsFromLocalStorage();
 
-
-
-
-        /*
-                                            // $(document) is because of event delegation ('.productCard' is being overwritten).
-                                            */
         $(document).on("click", ".deleteButton", function (event) {
             event.preventDefault();
 
-            let list = JSON.parse(localStorage.getItem("entries"));
+            const list = JSON.parse(localStorage.getItem("entries"));
+            const id = $(this).closest(".productCard").attr("id");
+            const [deleteDate, deletePosition] = id.split("_");
 
-            const id = $(this).closest("div").attr("id");
-            const deleteIDIndexArr = id.split("_");
-            const deleteDate = deleteIDIndexArr[0];
-            const deletePosition = deleteIDIndexArr[1];
-
-            console.log("index of deleting item " + deletePosition);
-            console.log("date of deleting item " + deleteDate);
-            //console.log(list);
-
-            function findIndexOfDeletingDate(list) {
-                const index = list.entries.findIndex(
-                    (element) => element.date === deleteDate
-                );
-                return index;
-            }
-
-            const entryIndex = findIndexOfDeletingDate(list);
-            //console.log(entryIndex);
-
-            //console.log(list.entries[entryIndex].products[deletePosition]);
+            const entryIndex = findIndexOfDate(list, deleteDate);
             list.entries[entryIndex].products.splice(deletePosition, 1);
-            console.log(list.entries[entryIndex].products.length);
-            if (list.entries[entryIndex].products.length == 0) {
-                console.log(list.entries[entryIndex]);
+
+            if (!list.entries[entryIndex].products.length) {
                 list.entries.splice(entryIndex, 1);
             }
 
             localStorage.setItem("entries", JSON.stringify(list));
-
             retrieveItemsFromLocalStorage();
         });
 
-        /* Sorting alg*/
         $(document).on("click", "#sortButton", function (event) {
             event.preventDefault();
 
-            let toSort = $(".productsDiv").children().not(productDivTitle);
-            toSort = Array.prototype.slice.call(toSort, 0);
-
-            toSort.sort(function (a, b) {
-                let aord = +a.id.split("-")[1];
-                let bord = +b.id.split("-")[1];
-                return aord > bord ? 1 : -1;
-            });
-
-            let parentProductDiv = $(".productsDiv");
-            toSort.forEach((div, i) => {
-                parentProductDiv.append(toSort[i]);
-            });
+            const toSort = $(".productsDiv").children().not("#productsDivTitle").get();
+            toSort.sort((a, b) => +a.id.split("_")[1] - +b.id.split("_")[1]);
+            $(".productsDiv").append(toSort);
         });
 
-        /* Display products by date */
         $("#dateInput").change(function () {
-            if (localStorage.getItem("entries") === null || JSON.parse(localStorage.getItem("entries")).entries.length == 0) return;
-            $("#noProductsToDisplay").remove();
+            const date = $(this).val();
+            $(".dateOfEntryDiv").toggle(date ? `#${date}` : true);
 
-            let date = $("#dateInput").val();
-
-            if (date == "") {
-                $(".dateOfEntryDiv").show();
+            if (!$(".productsDiv > div:visible").length) {
+                $(".productsDiv").append('<h2 id="noProductsToDisplay">No products to display!</h2>');
             } else {
-                $(".dateOfEntryDiv").show(); // to update already hidden cards by this func.
-                $(".dateOfEntryDiv").not(`#${date}`).hide();
-            }
-
-            if (
-                $("div.productsDiv>div").length ==
-                $('div.productsDiv>div[style*="display: none;"]').length
-            ) {
-                const noProductsToDisplay = $(
-                    '<h2 id="noProductsToDisplay">No products to display!</h2>'
-                );
-                $(".productsDiv").append(noProductsToDisplay);
+                $("#noProductsToDisplay").remove();
             }
         });
-
-
-        /* Finding a product on enter*/
 
         barInput.on("keypress", function (e) {
-            if (e.which == 13) {
+            if (e.which === 13) {
                 e.preventDefault();
-                const inputRegexCheck = new RegExp("^[0-9]{8,14}(,[0-9]{8,14})*$");
-                if (!inputRegexCheck.test(barInput.val())) {
-                    barInput.addClass("error");
-                    barInput.attr("placeholder", "Provide a valid barcode!");
-                    barInput.val('');
 
+                const barcode = $(this).val();
+                if (!/^[0-9]{8,14}(,[0-9]{8,14})*$/.test(barcode)) {
+                    $(this).addClass("error").attr("placeholder", "Provide a valid barcode!").val('');
+                    return;
                 }
-                else {
-                    loadSpinner();
-                    //setup localstorage on first fetch request
-                    if (localStorage.getItem("entries") === null) {
-                        let jsonList = {
-                            entries: [],
-                        };
-                        //jsonList.entries.push({ date: currentDate, products: [] });
-                        localStorage.setItem("entries", JSON.stringify(jsonList));
-                    }
-                    const url = `https://world.openfoodfacts.org/api/v2/search?code=${barInput.val()}&fields=code,product_name,generic_name,quantity,image_small_url,nutriments,nutriments_data,nutriscore_grade`;
-                    barInput.removeClass("error");
-                    barInput.val('');
-                    barInput.attr("placeholder", "🔎︎ Search by barcode");
 
-                    let list = JSON.parse(localStorage.getItem("entries"));
-                    axios
-                        .get(url)
-                        .then((resp) => {
-                            if (resp.data.products.length == 0) {
-                                barInput.addClass("error");
-                                barInput.attr("placeholder", "Didn't find a product!");
-                                barInput.val('');
-                                removeSpinner();
-                                return;
-                            }
-                            resp.data.products.forEach((product) => {
-                                resp.data.products.slice(product, 1);
-                            });
-                            console.log(resp.data);
-                            const productsJSON = [];
-                            console.log("productsJSON");
-                            console.log(productsJSON);
-                            resp.data.products.forEach((product) => {
-                                const productJSON = product;
-                                productsJSON.push(productJSON);
-                            });
+                loadSpinner();
 
-                            if (findIndexOfDate(list) === -1) {
-                                console.log("JSON needs a new day");
-                                list.entries.push({ date: currentDate, products: [] });
-                            }
-                            productsJSON.forEach((product) => {
-                                list.entries[findIndexOfDate(list)].products.push(product);
-                            });
-                            localStorage.setItem("entries", JSON.stringify(list));
-                            retrieveItemsFromLocalStorage();
-
-                            setTimeout(removeSpinner, 1000)
-                        })
-                        .catch((err) => console.log(err));
+                if (!localStorage.getItem("entries")) {
+                    localStorage.setItem("entries", JSON.stringify({ entries: [] }));
                 }
+
+                const url = `https://world.openfoodfacts.org/api/v2/search?code=${barcode}&fields=code,product_name,generic_name,quantity,image_small_url,nutriments,nutriments_data,nutriscore_grade`;
+
+                axios.get(url)
+                    .then(resp => {
+                        if (!resp.data.products.length) {
+                            barInput.addClass("error").attr("placeholder", "Didn't find a product!").val('');
+                            removeSpinner();
+                            return;
+                        }
+
+                        const list = JSON.parse(localStorage.getItem("entries"));
+                        const productsJSON = resp.data.products;
+
+                        if (findIndexOfDate(list, currentDate) === -1) {
+                            list.entries.push({ date: currentDate, products: [] });
+                        }
+
+                        list.entries[findIndexOfDate(list, currentDate)].products.push(...productsJSON);
+                        localStorage.setItem("entries", JSON.stringify(list));
+                        retrieveItemsFromLocalStorage();
+                        removeSpinner();
+                    })
+                    .catch(err => console.error(err));
             }
         });
-        
     });
 })();
